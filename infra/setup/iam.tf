@@ -1,6 +1,7 @@
 #######################################################################
 # Create IAM user and policies for Continuous Deployment (CD) account #
 #######################################################################
+data "aws_caller_identity" "current" {}
 
 resource "aws_iam_user" "cd" {
   name = "recipe-app-api-cd"
@@ -156,6 +157,7 @@ resource "aws_iam_user_policy_attachment" "ec2" {
 #########################
 # This should apply to the CD user to allow it to manage RDS resources for the recipe app API, 
 # such as creating and modifying the database instance, subnet groups, and tags.
+
 data "aws_iam_policy_document" "rds" {
   statement {
     effect = "Allow"
@@ -176,8 +178,17 @@ data "aws_iam_policy_document" "rds" {
     ]
     resources = ["*"]
   }
+# ADD THIS NEW STATEMENT
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/rds.amazonaws.com/AWSServiceRoleForRDS"
+    ]
+  }
 }
-
 
 resource "aws_iam_policy" "rds" {
   name        = "${aws_iam_user.cd.name}-rds"
