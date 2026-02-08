@@ -1,7 +1,6 @@
 #######################################################################
 # Create IAM user and policies for Continuous Deployment (CD) account #
 #######################################################################
-data "aws_caller_identity" "current" {}
 
 resource "aws_iam_user" "cd" {
   name = "recipe-app-api-cd"
@@ -30,7 +29,6 @@ data "aws_iam_policy_document" "tf_backend" {
       "arn:aws:s3:::${var.tf_state_bucket}/tf-state-deploy-env/*"
     ]
   }
-
   statement {
     effect = "Allow"
     actions = [
@@ -155,38 +153,21 @@ resource "aws_iam_user_policy_attachment" "ec2" {
 #########################
 # Policy for RDS access #
 #########################
-# This should apply to the CD user to allow it to manage RDS resources for the recipe app API, 
-# such as creating and modifying the database instance, subnet groups, and tags.
 
 data "aws_iam_policy_document" "rds" {
   statement {
     effect = "Allow"
     actions = [
-      "rds:CreateDBInstance",
-      "rds:ModifyDBInstance",
-      "rds:DeleteDBInstance",
+      "rds:DescribeDBSubnetGroups",
       "rds:DescribeDBInstances",
-
       "rds:CreateDBSubnetGroup",
       "rds:DeleteDBSubnetGroup",
-      "rds:ModifyDBSubnetGroup",
-      "rds:DescribeDBSubnetGroups",
-
-      "rds:AddTagsToResource",
-      "rds:RemoveTagsFromResource",
-      "rds:ListTagsForResource"
+      "rds:CreateDBInstance",
+      "rds:DeleteDBInstance",
+      "rds:ListTagsForResource",
+      "rds:ModifyDBInstance"
     ]
     resources = ["*"]
-  }
-# ADD THIS NEW STATEMENT
-  statement {
-    effect = "Allow"
-    actions = [
-      "iam:PassRole"
-    ]
-    resources = [
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/rds.amazonaws.com/AWSServiceRoleForRDS"
-    ]
   }
 }
 
