@@ -29,7 +29,6 @@ data "aws_iam_policy_document" "tf_backend" {
       "arn:aws:s3:::${var.tf_state_bucket}/tf-state-deploy-env/*"
     ]
   }
-
   statement {
     effect = "Allow"
     actions = [
@@ -166,14 +165,11 @@ data "aws_iam_policy_document" "rds" {
       "rds:CreateDBInstance",
       "rds:DeleteDBInstance",
       "rds:ListTagsForResource",
-      "rds:AddTagsToResource",
-      "rds:RemoveTagsFromResource",  
       "rds:ModifyDBInstance"
     ]
     resources = ["*"]
   }
 }
-
 
 resource "aws_iam_policy" "rds" {
   name        = "${aws_iam_user.cd.name}-rds"
