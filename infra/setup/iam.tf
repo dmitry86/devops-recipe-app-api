@@ -154,7 +154,8 @@ resource "aws_iam_user_policy_attachment" "ec2" {
 #########################
 # Policy for RDS access #
 #########################
-
+# This should apply to the CD user to allow it to manage RDS resources for the recipe app API, 
+# such as creating and modifying the database instance, subnet groups, and tags.
 data "aws_iam_policy_document" "rds" {
   statement {
     effect = "Allow"
