@@ -159,18 +159,24 @@ data "aws_iam_policy_document" "rds" {
   statement {
     effect = "Allow"
     actions = [
-      "rds:DescribeDBSubnetGroups",
+      "rds:CreateDBInstance",
+      "rds:ModifyDBInstance",
+      "rds:DeleteDBInstance",
       "rds:DescribeDBInstances",
+
       "rds:CreateDBSubnetGroup",
       "rds:DeleteDBSubnetGroup",
-      "rds:CreateDBInstance",
-      "rds:DeleteDBInstance",
-      "rds:ListTagsForResource",
-      "rds:ModifyDBInstance"
+      "rds:ModifyDBSubnetGroup",
+      "rds:DescribeDBSubnetGroups",
+
+      "rds:AddTagsToResource",
+      "rds:RemoveTagsFromResource",
+      "rds:ListTagsForResource"
     ]
     resources = ["*"]
   }
 }
+
 
 resource "aws_iam_policy" "rds" {
   name        = "${aws_iam_user.cd.name}-rds"
